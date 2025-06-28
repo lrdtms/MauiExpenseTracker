@@ -1,0 +1,164 @@
+Expense Tracker App Architecture (MAUI/C#)
+Core Components
+1. Presentation Layer (Views)
+-DashboardPage.xaml
+-HistoryPage.xaml
+-AnalyticsPage.xaml
+-CategoriesPage.xaml
+-SettingsPage.xaml
+-AddExpensePage.xaml
+-FirstRunPage.xaml — For onboarding and initial setup
+
+2. Navigation System
+-MAUI Shell Navigation
+-Bottom navigation bar: Dashboard | History | Analytics | Categories | Settings
+-Navigation with parameters & deep linking
+
+3. ViewModels (MVVM Pattern)
+-One ViewModel per page:
+	-DashboardViewModel.cs, AddExpenseViewModel.cs, etc.
+	-ThemeViewModel.cs — For dark/light mode switching
+	-FirstRunViewModel.cs — Manages tutorial flow and first-time setup
+
+4. Models & Data Layer
+Models/
+	public class Expense
+	{
+	    public string Id { get; set; }
+	    public string Description { get; set; }
+	    public decimal Amount { get; set; }
+	    public DateTime Date { get; set; }
+	    public string Category { get; set; }
+	    public bool IsRecurring { get; set; }
+	}
+	public class Category
+	{
+	    public string Name { get; set; }
+	    public string Icon { get; set; }
+	    public decimal Total { get; set; }
+	}
+	public class Budget
+	{
+	    public decimal MonthlyAmount { get; set; }
+	    public DateTime MonthYear { get; set; }
+	}
+	
+5. Services Layer
+-Services/Interfaces/
+	-IExpenseService.cs
+	-ICategoryService.cs
+	-IBudgetService.cs
+	-IAnalyticsService.cs
+	-IExportService.cs
+	-INotificationService.cs
+	-ISyncService.cs
+	-ILoggerService.cs
+	-IThemeService.cs
+	-IFirstRunService.cs
+-Services/Implementations/
+-Implement each of the above with retry logic and error handling
+-SyncService.cs with queue-based local change tracking and conflict resolution
+-LoggerService.cs logs to file or storage, useful for debug
+
+6. Data Storage
+-SQLite with Entity Framework Core
+	-ChangeTracker: Tracks offline changes for sync
+	-SecureStorage: For sensitive preferences or keys
+-Preferences:
+	-Theme
+	-First-run flag
+	-Currency
+	-Export: Generate and share CSV via file pickers
+
+7. Cloud Sync (Optional)
+-Sync strategy: Last-write-wins with conflict handling
+-Supported providers: Azure Cosmos DB, Firebase Realtime DB
+-BackgroundService.cs for periodic sync using:
+-Android: WorkManager
+-iOS: Background App Refresh
+
+8. Utility Components
+Utility			Purpose
+-ChartRenderer.cs	Draw charts using SkiaSharp or Microcharts
+-CurrencyConverter.cs	Local currency formatting and conversion
+-NotificationService.cs	Handles spending alerts and reminders
+-ExportService.cs	Export to CSV/PDF and sharing logic
+-ThemeService.cs	Light/dark mode toggling
+-LoggerService.cs	Log app events and errors to file
+-FirstRunService.cs	Tracks and runs onboarding logic
+
+9. Technical Stack
+Component	Technology
+-Framework	.NET MAUI
+-UI		XAML (MVVM with CommunityToolkit.Mvvm)
+-Storage	SQLite + EF Core, Preferences
+-Charts		Microcharts or Syncfusion.Maui.Charts
+-DI		Built-in MAUI Dependency Injection
+-File Handling	MAUI File Pickers, FileSystem Helpers
+
+-Key Features Implementation
+	-Budget Tracking
+	-Progress bar shows % used
+	-Notifications triggered at 75%, 90%, and 100%
+	-BudgetService auto-resets on month change
+
+-Analytics
+	-Pie chart → Spending per category
+	-Bar chart → Month-to-month
+	-Line chart → Daily trends
+	-Charts auto-update on data changes
+
+-Cloud Sync
+	-BackgroundService runs every X mins
+	-Queues local changes
+	-Conflict resolution: newest timestamp wins
+	-Displays sync status in Settings
+
+-Data Export
+	-CSV generation from data service
+	-Uses File Picker & Share API
+	-Option to export all or by filter (date/category)
+
+-Recurring Expenses
+	-Flag in AddExpense
+	-Background job adds entries based on frequency
+	-Editable or cancelable future entries
+
+-Onboarding (📌 New)
+	-FirstRunService detects first launch
+	-Shows:
+	-Welcome
+	-Feature highlights
+	-Add sample data or real categories
+
+-Theming (📌 New)
+	-Toggle in settings (Light/Dark/Auto)
+	-Stored in Preferences
+	-Reactive UI updates
+
+Final Project Structure
+ExpenseTracker/
+├── Views/
+├── ViewModels/
+├── Models/
+├── Services/
+│   ├── Interfaces/
+│   └── Implementations/
+├── Utilities/
+├── Platforms/
+│   ├── Android/
+│   └── iOS/
+├── Resources/
+│   ├── Themes/
+│   ├── Fonts/
+│   └── Images/
+└── App.xaml.cs
+
+Testing Strategy
+Test Type		Coverage
+Unit Tests		All ViewModels, Services
+Integration Tests	Local DB, SyncService
+UI Tests		Main navigation, Add/Edit flow
+Performance		Load testing with 5000+ expenses
+
+Tools: xUnit, Moq, Maui.UITest, SQLite.InMemory, BenchmarkDotNet
