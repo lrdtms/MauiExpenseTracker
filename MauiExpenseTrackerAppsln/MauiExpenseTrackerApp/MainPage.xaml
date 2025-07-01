@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiExpenseTrackerApp.ViewModels"
+              x:Name="MainPageRef"
+             x:Class="MauiExpenseTrackerApp.MainPage">
+
+    
+
+    <Grid BackgroundColor="LightGrey">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="60" />
+            <RowDefinition Height="60" />
+        </Grid.RowDefinitions>
+
+
+        <!-- Expense list -->
+        <CollectionView Grid.Row="0" ItemsSource="{Binding Expenses}" Margin="10">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems Mode="Reveal">
+                                <SwipeItem
+                            Text="Delete"
+                            BackgroundColor="Red"
+                            Command="{Binding BindingContext.DeleteExpenseCommand, Source={x:Reference MainPageRef}}"
+
+                            CommandParameter="{Binding .}" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+                     
+
+                    <Border BackgroundColor="white"
+                    Padding="10"
+                    Margin="0,5"
+                    Stroke="Gray"
+                    StrokeThickness="2">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10" />
+                        </Border.StrokeShape>
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Description}" FontAttributes="Bold" />
+                            <Label Text="{Binding Amount, StringFormat='R {0:F2}'}" FontSize="Small" />
+                        </VerticalStackLayout>
+                    </Border>
+                    </SwipeView>    
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Total -->
+        <Label Grid.Row="2"
+               Margin="10"
+               Text="{Binding Total, StringFormat='Total Expenses = R {0:F2}'}"
+               FontSize="Large"
+               FontAttributes="Bold" />
+
+        <!-- Add Button -->
+        <Button Text="+" FontSize="Large"
+        Grid.Row="3"
+        CornerRadius="100"
+        HorizontalOptions="End"
+        Margin="0,0,10,10"
+        Command="{Binding ShowAddExpensePopupCommand}" />
+    </Grid>
+
+</ContentPage>
