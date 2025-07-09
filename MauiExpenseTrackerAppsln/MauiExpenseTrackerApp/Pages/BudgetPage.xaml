@@ -2,11 +2,52 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiExpenseTrackerApp.Pages.BudgetPage"
+             xmlns:converters="clr-namespace:MauiExpenseTrackerApp.Converters"
              Title="BudgetPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <Grid RowDefinitions="*, *, *" >
+            <Grid Grid.Row="0"  RowDefinitions="*, *, *">
+                <Label Grid.Row="0" Background="White" Text="Total Income" HorizontalOptions="Center" VerticalOptions="End" FontAttributes="Bold"/>
+                <Border Grid.Row="1" Margin="20" Stroke="Black"
+                        IsVisible="{Binding IsSubmitted, Converter={StaticResource InverseBoolConverter}}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="20" />
+                    </Border.StrokeShape>
+                <Entry x:Name="TotalIncomeEntry"
+                       Text="{Binding IncomeInput, Mode=TwoWay}" 
+                       Placeholder="Income" 
+                       Keyboard="Numeric"
+                       BackgroundColor="White"
+                       HorizontalOptions="Fill"
+                       HorizontalTextAlignment="Center"
+                       PlaceholderColor="Black"
+                       Completed="OnIncomeEntryCompleted"/>
+                </Border>
+                <Label Grid.Row="1" Text="{Binding IncomeInput, StringFormat='R{0}'}"
+                       IsVisible="{Binding IsSubmitted, Converter={StaticResource BoolToVisibilityConverter}}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       FontSize="24"
+                       TextColor="Black" >
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnIncomeLabelTapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+            <Grid Grid.Row="1" Background="blue" RowDefinitions="*, *, *">
+                <Label Grid.Row="1" Background="White" Text="Remainder Income" HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Grid>
+            <Grid Grid.Row="2" Background="pink" RowDefinitions="*, *, *">
+                <Label Grid.Row="1" Background="White" Text="Total savings" HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Grid>
+        </Grid>
+    </ScrollView>
 </ContentPage>

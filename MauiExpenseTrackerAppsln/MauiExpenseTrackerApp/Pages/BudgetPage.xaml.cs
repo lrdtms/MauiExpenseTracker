@@ -1,9 +1,26 @@
-namespace MauiExpenseTrackerApp.Pages;
+using MauiExpenseTrackerApp.ViewModels;
+using Microsoft.Maui.Controls;
+using System;
 
-public partial class BudgetPage : ContentPage
-{
-	public BudgetPage()
+namespace MauiExpenseTrackerApp.Pages
+{ 
+
+    public partial class BudgetPage : ContentPage
+    {
+    private BudgetPageViewModel viewModel;
+    public BudgetPage()
 	{
 		InitializeComponent();
-	}
+        viewModel = new BudgetPageViewModel();
+        BindingContext = viewModel;
+    }
+    private void OnIncomeEntryCompleted(object sender, EventArgs e)
+    {
+        viewModel.IsSubmitted = true;
+    }
+        private void OnIncomeLabelTapped(object sender, EventArgs e)
+        {
+            viewModel.IsSubmitted = false; // Re-enable Entry box
+        }
+    }
 }
