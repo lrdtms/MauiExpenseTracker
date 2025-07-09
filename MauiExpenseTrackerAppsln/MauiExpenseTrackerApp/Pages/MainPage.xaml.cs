@@ -1,7 +1,9 @@
 ﻿using MauiExpenseTrackerApp.Models;
 using MauiExpenseTrackerApp.ViewModels;
 
-namespace MauiExpenseTrackerApp
+
+
+namespace MauiExpenseTrackerApp.Pages
 {
     public partial class MainPage : ContentPage
     {

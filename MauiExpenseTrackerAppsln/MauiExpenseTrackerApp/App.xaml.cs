@@ -13,7 +13,7 @@ namespace MauiExpenseTrackerApp
             string dbPath = GetDatabasePath();      // 👈 Use it here
             Database = new DatabaseService(dbPath); // 👈 Initialize here
 
-            MainPage = new MainPage(); // or MainPage, depending on your layout
+            MainPage = new AppShell(); // or MainPage, depending on your layout
         }
 
         
