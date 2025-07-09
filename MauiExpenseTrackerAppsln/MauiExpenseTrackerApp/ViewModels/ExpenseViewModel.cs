@@ -13,12 +13,24 @@ namespace MauiExpenseTrackerApp.ViewModels
         public ExpenseViewModel(Page page)
         {
             _page = page;
+            LoadExpenses(); // 🔄 Load from SQLite when ViewModel is created
         }
 
         public ObservableCollection<Expense> Expenses { get; set; } = new();
 
         [ObservableProperty]
         decimal total;
+
+        private async void LoadExpenses()
+        {
+            var expensesFromDb = await App.Database.GetExpensesAsync();
+
+            Expenses.Clear();
+            foreach (var expense in expensesFromDb)
+                Expenses.Add(expense);
+
+            Total = Expenses.Sum(e => e.Amount);
+        }
 
         [RelayCommand]
         public async Task ShowAddExpensePopupAsync()
@@ -32,8 +44,16 @@ namespace MauiExpenseTrackerApp.ViewModels
 
             if (decimal.TryParse(amountStr, out decimal amount) && amount > 0)
             {
-                Expenses.Add(new Expense { Description = description, Amount = amount });
-                Total = Expenses.Sum(e => e.Amount);
+                var newExpense = new Expense
+                {
+                    Description = description,
+                    Amount = amount,
+                    Date = DateTime.Now
+                };
+
+                await App.Database.AddExpenseAsync(newExpense); // 💾 Save to DB
+                Expenses.Add(newExpense);                      // 🧠 Add to list
+                Total = Expenses.Sum(e => e.Amount);           // 🔄 Update total
             }
             else
             {
@@ -42,12 +62,13 @@ namespace MauiExpenseTrackerApp.ViewModels
         }
 
         [RelayCommand]
-        void DeleteExpense(Expense expense)
+        public async void DeleteExpense(Expense expense)
         {
             if (Expenses.Contains(expense))
             {
-                Expenses.Remove(expense);
-                Total = Expenses.Sum(e => e.Amount);
+                await App.Database.DeleteExpenseAsync(expense); // ❌ Remove from DB
+                Expenses.Remove(expense);                      // ❌ Remove from UI
+                Total = Expenses.Sum(e => e.Amount);           // 🔄 Update total
             }
         }
     }

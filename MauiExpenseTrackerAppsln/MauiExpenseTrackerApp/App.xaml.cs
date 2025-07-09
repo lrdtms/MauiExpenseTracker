@@ -1,15 +1,28 @@
-﻿namespace MauiExpenseTrackerApp
+﻿using MauiExpenseTrackerApp.Services;
+
+namespace MauiExpenseTrackerApp
 {
     public partial class App : Application
     {
+        public static DatabaseService Database { get; private set; }
+
         public App()
         {
             InitializeComponent();
+
+            string dbPath = GetDatabasePath();      // 👈 Use it here
+            Database = new DatabaseService(dbPath); // 👈 Initialize here
+
+            MainPage = new MainPage(); // or MainPage, depending on your layout
         }
 
-        protected override Window CreateWindow(IActivationState? activationState)
+        
+
+        private static string GetDatabasePath()    // 👈 Add it here
         {
-            return new Window(new AppShell());
+            string filename = "expenses.db";
+            string folderPath = FileSystem.AppDataDirectory;
+            return Path.Combine(folderPath, filename);
         }
     }
 }
