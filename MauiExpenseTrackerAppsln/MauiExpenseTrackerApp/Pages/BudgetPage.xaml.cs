@@ -20,7 +20,10 @@ namespace MauiExpenseTrackerApp.Pages
     }
         private void OnIncomeLabelTapped(object sender, EventArgs e)
         {
-            viewModel.IsSubmitted = false; // Re-enable Entry box
+            if (BindingContext is BudgetPageViewModel vm)
+            {
+                vm.IsSubmitted = !vm.IsSubmitted;
+            }
         }
     }
 }

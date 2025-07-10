@@ -11,6 +11,7 @@ namespace MauiExpenseTrackerApp.Services
         {
             _database = new SQLiteAsyncConnection(dbPath);
             _database.CreateTableAsync<Expense>().Wait();
+            _database.CreateTableAsync<Income>().Wait();
         }
 
         public Task<List<Expense>> GetExpensesAsync()
@@ -32,5 +33,13 @@ namespace MauiExpenseTrackerApp.Services
         {
             return _database.UpdateAsync(expense);
         }
+        public Task<List<Income>> GetIncomeAsync() =>
+        _database.Table<Income>().OrderByDescending(i => i.DateRecorded).ToListAsync();
+
+        public Task<Income> GetLatestIncomeAsync() =>
+            _database.Table<Income>().OrderByDescending(i => i.DateRecorded).FirstOrDefaultAsync();
+
+        public Task<int> SaveIncomeAsync(Income income) =>
+            _database.InsertAsync(income);
     }
 }

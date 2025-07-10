@@ -15,6 +15,9 @@
     <ScrollView>
         <Grid RowDefinitions="*, *, *" >
             <Grid Grid.Row="0"  RowDefinitions="*, *, *">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnIncomeLabelTapped" />
+                </Grid.GestureRecognizers>
                 <Label Grid.Row="0" Background="White" Text="Total Income" HorizontalOptions="Center" VerticalOptions="End" FontAttributes="Bold"/>
                 <Border Grid.Row="1" Margin="20" Stroke="Black"
                         IsVisible="{Binding IsSubmitted, Converter={StaticResource InverseBoolConverter}}">
@@ -37,9 +40,7 @@
                        VerticalOptions="Center"
                        FontSize="24"
                        TextColor="Black" >
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnIncomeLabelTapped"/>
-                    </Label.GestureRecognizers>
+                    
                 </Label>
             </Grid>
             <Grid Grid.Row="1" Background="blue" RowDefinitions="*, *, *">
