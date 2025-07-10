@@ -1,8 +1,11 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using MauiExpenseTrackerApp.Models;
 using System.Collections.ObjectModel;
+using MauiExpenseTrackerApp.Messages;
+
 
 namespace MauiExpenseTrackerApp.ViewModels
 {
@@ -54,6 +57,7 @@ namespace MauiExpenseTrackerApp.ViewModels
                 await App.Database.AddExpenseAsync(newExpense); // 💾 Save to DB
                 Expenses.Add(newExpense);                      // 🧠 Add to list
                 Total = Expenses.Sum(e => e.Amount);           // 🔄 Update total
+                WeakReferenceMessenger.Default.Send(new ExpensesChangedMessage(true));
             }
             else
             {
@@ -69,6 +73,7 @@ namespace MauiExpenseTrackerApp.ViewModels
                 await App.Database.DeleteExpenseAsync(expense); // ❌ Remove from DB
                 Expenses.Remove(expense);                      // ❌ Remove from UI
                 Total = Expenses.Sum(e => e.Amount);           // 🔄 Update total
+                WeakReferenceMessenger.Default.Send(new ExpensesChangedMessage(true));
             }
         }
     }

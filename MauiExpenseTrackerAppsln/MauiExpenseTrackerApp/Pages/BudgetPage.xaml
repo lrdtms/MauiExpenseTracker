@@ -44,7 +44,7 @@
                 </Label>
             </Grid>
             <Grid Grid.Row="1" Background="blue" RowDefinitions="*, *, *">
-                <Label Grid.Row="1" Background="White" Text="Remainder Income" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Row="1" Background="White" Text="{Binding RemainderIncome}" HorizontalOptions="Center" VerticalOptions="Center"/>
             </Grid>
             <Grid Grid.Row="2" Background="pink" RowDefinitions="*, *, *">
                 <Label Grid.Row="1" Background="White" Text="Total savings" HorizontalOptions="Center" VerticalOptions="Center"/>

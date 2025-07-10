@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MauiExpenseTrackerApp.Models;
+using MauiExpenseTrackerApp.Messages;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace MauiExpenseTrackerApp.ViewModels
 {
@@ -9,6 +11,7 @@ namespace MauiExpenseTrackerApp.ViewModels
         private string _incomeInput;
         private bool _isSubmitted;
         private string _total;
+        private string _remainderIncome;
 
         public string IncomeInput
         {
@@ -33,6 +36,7 @@ namespace MauiExpenseTrackerApp.ViewModels
             }
         }
 
+        
         public string Total
         {
             get => _total;
@@ -47,6 +51,11 @@ namespace MauiExpenseTrackerApp.ViewModels
         {
             LoadIncomeFromDatabase();
             IsSubmitted = Preferences.Get("IsSubmitted", false); // ✅ Reload submission state
+            _ = UpdateRemainderIncomeAsync();
+            WeakReferenceMessenger.Default.Register<ExpensesChangedMessage>(this, async (r, m) =>
+            {
+                await UpdateRemainderIncomeAsync();
+            });
         }
 
         private async void LoadIncomeFromDatabase()
@@ -74,6 +83,7 @@ namespace MauiExpenseTrackerApp.ViewModels
                 };
 
                 await App.Database.SaveIncomeAsync(newIncome); // ✅ Save to SQLite
+                await UpdateRemainderIncomeAsync();
             }
         }
 
@@ -87,6 +97,27 @@ namespace MauiExpenseTrackerApp.ViewModels
             {
                 Total = "R0.00";
             }
+        }
+        public string RemainderIncome
+        {
+            get => _remainderIncome;
+            set
+            {
+                _remainderIncome = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public async Task UpdateRemainderIncomeAsync()
+        {
+            if (!decimal.TryParse(IncomeInput, out decimal income))
+                income = 0;
+
+            var expenses = await App.Database.GetExpensesAsync();
+            var totalExpenses = expenses.Sum(e => e.Amount);
+
+            var remainder = income - totalExpenses;
+            RemainderIncome = $"R{remainder:N2}";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
