@@ -5,9 +5,19 @@
              x:Class="MauiExpenseTrackerApp.Pages.GraphPage"
              Title="Expense Pie Chart">
 
-    <Grid HeightRequest="300" VerticalOptions="Center" RowDefinitions="*,auto,*">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <syncfusion:ChartDataLabelStyle x:Key="LabelStyle" 
+                                        TextColor="Black" 
+                                        FontSize="14" 
+                                        FontAttributes="Bold" />
+            <syncfusion:CircularDataLabelSettings x:Key="PieLabelSettings"
+                                              LabelStyle="{StaticResource LabelStyle}" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-        <VerticalStackLayout Padding="20" Grid.Row="1">
+    <Grid   RowDefinitions="400,auto">
+        <Grid Grid.Row="0" VerticalOptions="Start">
 
             <syncfusion:SfCircularChart x:Name="PieChart">
                 <syncfusion:SfCircularChart.Series>
@@ -17,11 +27,15 @@
                         YBindingPath="Amount"
                         ShowDataLabels="True"
                         Radius="0.9"
-                        ExplodeAll="True" />
+                        
+                        DataLabelSettings="{StaticResource PieLabelSettings}" />
                 </syncfusion:SfCircularChart.Series>
             </syncfusion:SfCircularChart>
-
-        </VerticalStackLayout>
-
+        </Grid>
+        <Grid Grid.Row="1" RowDefinitions="auto,auto,auto">
+        <Label  Grid.Row="0" Text="Hectic" TextColor="Black" FontSize="20" VerticalOptions="End"/>
+            <Label Grid.Row="1" Text="Hectic" TextColor="Black" FontSize="20" VerticalOptions="Center"/>
+            <Label Grid.Row="2" Text="Hectic" TextColor="Black" FontSize="20" VerticalOptions="End"/>
+        </Grid>
     </Grid>
 </ContentPage>
