@@ -12,6 +12,7 @@ namespace MauiExpenseTrackerApp.ViewModels
         private bool _isSubmitted;
         private string _total;
         private string _remainderIncome;
+        private string _savings;
 
         public string IncomeInput
         {
@@ -118,6 +119,19 @@ namespace MauiExpenseTrackerApp.ViewModels
 
             var remainder = income - totalExpenses;
             RemainderIncome = $"R{remainder:N2}";
+
+            var savings = remainder * 0.10m;
+            Savings = $"R{savings:N2}";
+        }
+
+        public string Savings
+        {
+            get => _savings;
+            set
+            {
+                _savings = value;
+                OnPropertyChanged();
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
