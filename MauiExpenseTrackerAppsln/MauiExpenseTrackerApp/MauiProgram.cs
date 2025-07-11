@@ -2,6 +2,9 @@
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using CommunityToolkit.Maui;
 
+using Syncfusion.Maui.Core.Hosting;
+
+
 namespace MauiExpenseTrackerApp
 {
     public static class MauiProgram
@@ -12,6 +15,7 @@ namespace MauiExpenseTrackerApp
             builder
                 .UseMauiApp<App>()
                 .UseSkiaSharp()
+                .ConfigureSyncfusionCore()
                 .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
             {
